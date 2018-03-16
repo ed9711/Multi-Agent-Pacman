@@ -76,9 +76,11 @@ class ReflexAgent(Agent):
         "*** YOUR CODE HERE ***"
         result = 0
         if successorGameState.isWin():
+            # take this move
             return 999999
 
         if successorGameState.getScore() > currentGameState.getScore():
+            # this move is good
             result += 100
         ghostPosition = successorGameState.getGhostPosition(1)
 
@@ -89,10 +91,13 @@ class ReflexAgent(Agent):
             distance = (manhattanDistance(f, newPos))
             if distance < closest:
                 closest = distance
+        # the closer the food the better the move
         result -= closest
         if newPos == ghostPosition and newScaredTimes[0] == 0:
+            # do not take this move ever
             result = -999999
         if action == 'Stop':
+            # do not take this move
             result = -111111
         return result
 
@@ -164,13 +169,13 @@ class MinimaxAgent(MultiAgentSearchAgent):
         num = state.getNumAgents()
 
         if agent == num:
-            # Is player go back to 0
+            # Is player go back to 0, change depth
             return self.minimax(state, depth + 1, 0)
         legalMoves = state.getLegalActions(agent)
 
         if state.isLose() or state.isWin() or depth == self.depth or len(legalMoves) == 0:
             return self.evaluationFunction(state)
-
+        # loop through agents
         values = [self.minimax(state.generateSuccessor(agent, a), depth, agent + 1) for a in legalMoves]
 
         if agent == 0:
@@ -202,7 +207,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         return self.maxValue(gameState, 0, 0, alpha, beta)[1]
 
     # def alphaBeta(self, state, depth, agent, alpha, beta):
-    #
+    # "might work, but don't have time to fix this one, seems to look better"
     #     num = state.getNumAgents()
     #
     #     if agent == num:
@@ -240,6 +245,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 v = value[0]
                 action = a
             if v >= beta:
+                # prune
                 return [v, action]
             alpha = max(alpha, v)
         return [v, action]
@@ -261,6 +267,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 v = value[0]
                 action = a
             if v <= alpha:
+                # prune
                 return [v, action]
             beta = min(beta, v)
         return [v, action]
