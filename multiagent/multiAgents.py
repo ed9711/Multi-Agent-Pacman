@@ -213,17 +213,19 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     #         return self.evaluationFunction(state)
     #
     #     for a in state.getLegalActions(agent):
-    #         v = max(v, self.alphaBeta(state.generateSuccessor(agent, a), depth, agent + 1, alpha, beta))
-    #         if v > beta:
-    #             return v
-    #         alpha = max(alpha, v)
-    #     return v
+    #         v = self.alphaBeta(state.generateSuccessor(agent, a), depth, agent + 1, alpha, beta)
     #
-    #     if agent == 0:
-    #         # Is player
-    #         return max(values)
-    #     else:
-    #         return min(values)
+        #     if agent == 0:
+        #         # Is player
+        #         if v >= beta:
+        #             return v, a
+        #         alpha = max(alpha, v)
+        #         return v, a
+        #     else:
+        #         if v <= alpha:
+        #             return v, a
+        #         beta = min(beta, v)
+        #         return v, a
 
     def maxValue(self, state, agent, depth, alpha, beta):
         legalMoves = state.getLegalActions(agent)
