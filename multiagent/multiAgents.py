@@ -286,7 +286,32 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           legal moves.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        result = []
+        action = []
+        for s in gameState.getLegalActions(0):
+            result.append(self.expectimax(gameState.generateSuccessor(0, s), 0, 1))
+            action.append(s)
+        return action[result.index(max(result))]
+
+    def expectimax(self, state, depth, agent):
+
+        num = state.getNumAgents()
+
+        if agent == num:
+            # Is player go back to 0, change depth
+            return self.expectimax(state, depth + 1, 0)
+        legalMoves = state.getLegalActions(agent)
+
+        if state.isLose() or state.isWin() or depth == self.depth or len(legalMoves) == 0:
+            return self.evaluationFunction(state)
+        # loop through agents
+        values = [self.expectimax(state.generateSuccessor(agent, a), depth, agent + 1) for a in legalMoves]
+
+        if agent == 0:
+            # Is player
+            return max(values)
+        else:
+            return float(sum(values))/float(len(values))
 
 
 def betterEvaluationFunction(currentGameState):
@@ -295,9 +320,51 @@ def betterEvaluationFunction(currentGameState):
       evaluation function (question 5).
 
       DESCRIPTION: <write something here so we know what you did>
+      if state is win or lose, return max or min value
+      base value 100
+      + game score, the higher the better
+      - 1/distance to ghost, longer the better
+      + 30/distance to scared ghost, shorter the better, worth much more than normal distance
+      - closest food distance, shorter the better
+      - 8*number of food left, worth a lot and smaller the better
+
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    position = currentGameState.getPacmanPosition()
+    foods = currentGameState.getFood()
+    ghostStates = currentGameState.getGhostStates()
+    scaredTimes = [ghostState.scaredTimer for ghostState in ghostStates]
+
+    if currentGameState.isWin():
+        return 999999
+    if currentGameState.isLose():
+        return -999999
+
+    result = 100 + currentGameState.getScore()
+
+    for ghost in ghostStates:
+        distance = manhattanDistance(position, ghost.getPosition())
+        if distance > 0:
+            result -= 1/distance
+        if ghost.scaredTimer > 0:
+            result += 30/distance
+
+
+    food = foods.asList()
+
+    closest = 99999
+    for f in food:
+        distance = (manhattanDistance(f, position))
+        if distance < closest:
+            closest = distance
+    # the closer the food the better the state
+
+    result -= closest
+
+    result -= 8*len(food)
+
+    return result
 
 
 # Abbreviation
