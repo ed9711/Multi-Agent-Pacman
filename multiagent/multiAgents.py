@@ -206,20 +206,20 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         beta = 999999
         return self.maxValue(gameState, 0, 0, alpha, beta)[1]
 
-    # def alphaBeta(self, state, depth, agent, alpha, beta):
-    # "might work, but don't have time to fix this one, seems to look better"
-    #     num = state.getNumAgents()
-    #
-    #     if agent == num:
-    #         # Is player go back to 0
-    #         return self.alphaBeta(state, 0, depth + 1, alpha, beta)
-    #
-    #     if state.isLose() or state.isWin() or depth == self.depth or len(state.getLegalActions(agent)) == 0:
-    #         return self.evaluationFunction(state)
-    #
-    #     for a in state.getLegalActions(agent):
-    #         v = self.alphaBeta(state.generateSuccessor(agent, a), depth, agent + 1, alpha, beta)
-    #
+        # def alphaBeta(self, state, depth, agent, alpha, beta):
+        # "might work, but don't have time to fix this one, seems to look better"
+        #     num = state.getNumAgents()
+        #
+        #     if agent == num:
+        #         # Is player go back to 0
+        #         return self.alphaBeta(state, 0, depth + 1, alpha, beta)
+        #
+        #     if state.isLose() or state.isWin() or depth == self.depth or len(state.getLegalActions(agent)) == 0:
+        #         return self.evaluationFunction(state)
+        #
+        #     for a in state.getLegalActions(agent):
+        #         v = self.alphaBeta(state.generateSuccessor(agent, a), depth, agent + 1, alpha, beta)
+        #
         #     if agent == 0:
         #         # Is player
         #         if v >= beta:
@@ -311,7 +311,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
             # Is player
             return max(values)
         else:
-            return float(sum(values))/float(len(values))
+            return float(sum(values)) / float(len(values))
 
 
 def betterEvaluationFunction(currentGameState):
@@ -346,10 +346,9 @@ def betterEvaluationFunction(currentGameState):
     for ghost in ghostStates:
         distance = manhattanDistance(position, ghost.getPosition())
         if distance > 0:
-            result -= 1/distance
+            result -= 1 / distance
         if ghost.scaredTimer > 0:
-            result += 30/distance
-
+            result += 30 / distance
 
     food = foods.asList()
 
@@ -362,7 +361,7 @@ def betterEvaluationFunction(currentGameState):
 
     result -= closest
 
-    result -= 8*len(food)
+    result -= 8 * len(food)
 
     return result
 
